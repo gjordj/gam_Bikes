@@ -1,0 +1,5 @@
+"0","############################################################################"
+"0","# Plot relationships: Count vs Variable with the optimal polynomial degrees# "
+"0","############################################################################"
+"0","temp_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""temp""), ""Temperature"")"
+"0","temp_polynomial_degree# 5"

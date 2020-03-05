@@ -1,0 +1,6 @@
+"0","spline_line(raw_data, which( colnames(raw_data) == ""hum"" ), ""Humidity"")"
+"2","Warning in smooth.spline(raw_data$variable, raw_data$casual, cv = TRUE) :"
+"2","
+ "
+"2"," cross-validation with non-unique 'x' values seems doubtful
+"

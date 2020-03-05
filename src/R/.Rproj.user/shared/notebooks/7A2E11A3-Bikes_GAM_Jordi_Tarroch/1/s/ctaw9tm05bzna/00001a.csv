@@ -1,0 +1,2 @@
+"0","hum_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""hum""), ""Humidity"")"
+"0","hum_polynomial_degree# 2"

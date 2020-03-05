@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571575115756.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3095459344",
+    "id" : "A848A584",
+    "lastKnownWriteTime" : 1571657133,
+    "last_content_update" : 1571657133407,
+    "path" : "~/Google Drive/DATA SCIENCE-TRADING/1_CUNEF/Prediction/Prediction_Code/Bikes/Bikes_GAM_Jordi_Tarroch.R",
+    "project_path" : "Bikes_GAM_Jordi_Tarroch.R",
+    "properties" : {
+        "cursorPosition" : "236,188",
+        "docOutlineVisible" : "0",
+        "scrollLine" : "227",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

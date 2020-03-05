@@ -1,0 +1,2 @@
+"0","spline_line(raw_data, which( colnames(raw_data) == ""registered"" ), ""Registered"")"
+"2","cross-validation with non-unique 'x' values seems doubtful"

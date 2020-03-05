@@ -1,0 +1,6 @@
+"0","# spline_line(raw_data, which( colnames(raw_data) == ""holiday"" ), ""Holiday"")"
+"0","# spline_line(raw_data, which( colnames(raw_data) == ""weekday"" ), ""Weekday"")"
+"0","# spline_line(raw_data, which( colnames(raw_data) == ""workingday"" ), ""Working Day"")"
+"0","# spline_line(raw_data, which( colnames(raw_data) == ""weathersit"" ), ""Weather Situation"")"
+"0","spline_line(raw_data, which( colnames(raw_data) == ""atemp"" ), ""Feeling Temperature"")"
+"2","cross-validation with non-unique 'x' values seems doubtful"

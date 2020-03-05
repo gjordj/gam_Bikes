@@ -1,0 +1,5 @@
+"0","holiday_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""holiday""), ""Holiday"")"
+"1","[1]"
+"1"," ""Holiday"""
+"1","
+"

@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1573383251142.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1488802179",
+    "id" : "A4BB0C5",
+    "lastKnownWriteTime" : 1572799939,
+    "last_content_update" : 1572799939,
+    "path" : "~/Google Drive/DATA SCIENCE-TRADING/1_CUNEF/Prediction/2_Prediction_Code/2_Non-linear Regression - GAM/Bikes/src/R/Bikes_GAM_Jordi_Tarroch.R",
+    "project_path" : "Bikes_GAM_Jordi_Tarroch.R",
+    "properties" : {
+        "cursorPosition" : "7,23",
+        "docOutlineVisible" : "0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,5 @@
+"0","#########################################################################################"
+"0","# Plot relationships: Count vs Variable with the spline with the optimal freedom degrees# "
+"0","#########################################################################################"
+"0","spline_line(raw_data, which( colnames(raw_data) == ""temp"" ), ""Temperature"")"
+"2","cross-validation with non-unique 'x' values seems doubtful"

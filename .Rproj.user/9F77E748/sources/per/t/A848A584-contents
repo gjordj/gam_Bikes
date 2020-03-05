@@ -1,0 +1,330 @@
+# Prediction of bike rental count hourly or daily based on the environmental and seasonal settings.
+
+
+
+
+##############
+#LIBRARIES####
+##############
+library(readr)
+library(skimr)# Beautiful Summarize
+library(corrplot)# Correlations
+library(ggcorrplot)  # Correlations
+library(PerformanceAnalytics) # Correlations
+library(tidyverse)#select_at
+library(splines)
+library(gam)
+
+
+##############
+# GET DATA####
+##############
+raw_data <-  read_csv('day.csv')
+
+
+#########################
+# DATA WRANGLING DATA####
+#########################
+dim(raw_data)
+skim(raw_data)
+
+# CHECK DUPLICATED DATA: no duplicated data to delete.
+# CHECK NA's: no NAs to delete.
+
+# Summarise
+skim(raw_data)
+
+##############################
+#EXPLORATORY DATA ANALYSIS####
+##############################################################################################################
+
+# CHECK NON-SENSE DATA: delete instant column that has same values as the index, date as we don't care about 
+# the number of the day inside the month and the year.
+
+# Excluded vars (factor)
+vars <- c("instant","dteday","yr")
+
+
+
+#####################
+# CORRELATION MATRIX#
+#####################
+# Correlations
+corrplot(cor(raw_data %>% 
+               select_at(vars(-vars)), 
+             use = "complete.obs"), 
+         method = "circle",type = "upper")
+
+# Other Correlations
+ggcorrplot(cor(raw_data %>% 
+                 select_at(vars(-vars)), 
+               use = "complete.obs"),
+           hc.order = TRUE,
+           type = "lower",  lab = TRUE)
+
+# Other Correlations
+chart.Correlation(raw_data %>% 
+                    select_at(vars(-vars)),
+                  histogram = TRUE, pch = 19)
+
+#Check initial correlation between variables and cnt based on a coefficient.
+newData <- raw_data %>% select_at(vars(-vars))
+newData.cor = cor(newData)
+corrplot(newData.cor)
+corrplot(newData.cor, type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
+
+
+
+newData.cor <- data.frame(newData.cor)
+correlated <- c()
+variable <- c()
+coefficient_limit  <- c()
+select_columns <-  c()
+coeff <-  0.3
+newData.cor[13,1]
+dim(newData.cor)[1]
+newData.cor[13,1] 
+
+for(column in 1:dim(newData.cor)[1]){
+  if(abs(newData.cor[13,column]) > coeff){
+    variable <-  append(variable, names(newData.cor)[column])
+    correlated  <-  append(correlated, newData.cor[13,column] )
+    coefficient_limit <- append(coefficient_limit,coeff)
+  }
+}
+correlated_variables <-  data.frame(variable,correlated, coefficient_limit)
+# correlated_variables <-  data.frame(variable,correlated)
+
+print(correlated_variables)
+
+
+
+#################################################################################################
+# PREDICTION#####################################################################################
+#################################################################################################
+
+
+#########################
+#FIT A SMOOTHING SPLINE#################################################################################
+#########################
+
+##################################
+# Degres of freedom of the spline#
+##################################
+
+#We can also fit a smoothing spline with none other than smooth.spline(). Here we fit a spline with
+# 16 degrees of freedom, then spline chosen by cross-validation, which yields 6.8 degrees of freedom.
+spline_line <- function(raw_data, column, name_variable){
+  raw_data <- raw_data[,c(column, 16)]
+  names(raw_data)[1] <- "variable"
+  names(raw_data)[2] <- "cnt"
+
+  fit <- smooth.spline(raw_data$variable, raw_data$cnt, df = 16)
+  fit2 <- smooth.spline(raw_data$variable, raw_data$cnt, cv = TRUE)
+  freedom_degrees <- fit2$df
+  
+  legend('topright', legend = c('16 DF', '9.1 DF'),
+         col = c('red','blue'), lty = 1, lwd = 2, cex = 0.8)
+  
+  ggplot() +
+    geom_point(data  =  raw_data, aes(x = variable, y = cnt),size = 1, shape = 1) +
+    labs(
+      x = name_variable,
+      y = "Count"
+    ) + 
+    ggtitle(paste("Freedom degrees:", freedom_degrees)) + 
+    geom_line(aes(x = fit$x, y = fit$y), colour = 'red') + 
+    geom_line(aes(x = fit2$x, y = fit2$y), colour = 'blue')
+}
+
+
+
+spline_line(raw_data, which( colnames(raw_data) == "temp" ), "Temperature")
+spline_line(raw_data, which( colnames(raw_data) == "season" ), "Season")
+spline_line(raw_data, which( colnames(raw_data) == "mnth" ), "Month")
+spline_line(raw_data, which( colnames(raw_data) == "holiday" ), "Holiday")
+spline_line(raw_data, which( colnames(raw_data) == "weekday" ), "Weekday")
+spline_line(raw_data, which( colnames(raw_data) == "workingday" ), "Working Day")
+spline_line(raw_data, which( colnames(raw_data) == "weathersit" ), "Weather Situation")
+spline_line(raw_data, which( colnames(raw_data) == "atemp" ), "Feeling Temperature")
+spline_line(raw_data, which( colnames(raw_data) == "hum" ), "Humidity")
+spline_line(raw_data, which( colnames(raw_data) == "windspeed" ), "Wind Speed")
+spline_line(raw_data, which( colnames(raw_data) == "casual" ), "Casual")
+spline_line(raw_data, which( colnames(raw_data) == "registered" ), "Registered")
+
+
+
+
+#############################
+# GENERALIZED ADDITIVE MODEL##################################################################################
+#############################
+
+library(ISLR)
+fit = lm(wage~poly(age, 4), data = Wage)
+kable(coef(summary(fit)))
+
+
+
+# !!!!!change: wage ~ year age education
+ggplot(data=raw_data, aes(x=cnt, y=temp)) + geom_point(color='gray')  + 
+  geom_smooth(method='loess', span=0.2)  + 
+  geom_smooth(method='loess', span=0.5, color='red') + 
+  theme_bw()
+
+
+
+#######
+# GAMs##############################################################################################################
+#######
+
+#Now we use a GAM to predict wage using a natural spline of year, age, and education. Since this is simply a linear regression model with several basis functions, we simply use the lm() function.
+# !!!!!change: wage ~ year age education
+df_temp <- round(smooth.spline(raw_data$temp, raw_data$cnt, cv = TRUE)$df)
+
+gam1 <- lm(cnt ~ ns(temp, df_temp),data = raw_data)
+ns
+# gam1 <- lm(cnt ~ ns(temp, 5) + education, 
+#            data=raw_data)
+
+#To fit more complex splines, or other components that cannot be specified as basis functions, we need to use the gam library in R. the s() function is used to indicate a smoothing spline.
+
+
+## Loaded gam 1.09.1
+# !!!!!change: wage ~ year age education
+
+df_season <- round(smooth.spline(raw_data$season, raw_data$cnt, cv = TRUE)$df)
+df_mnth <- round(smooth.spline(raw_data$mnth, raw_data$cnt, cv = TRUE)$df) 
+# df_weathersit <- smooth.spline(raw_data$weathersit, raw_data$cnt, cv = TRUE)$df
+df_atemp <- round(smooth.spline(raw_data$atemp, raw_data$cnt, cv = TRUE)$df)
+df_hum <- round(smooth.spline(raw_data$hum, raw_data$cnt, cv = TRUE)$df)
+df_windspeed <- round(smooth.spline(raw_data$windspeed, raw_data$cnt, cv = TRUE)$df)
+df_casual <- round(smooth.spline(raw_data$casual, raw_data$cnt, cv = TRUE)$df)
+df_registered <- round(smooth.spline(raw_data$registered, raw_data$cnt, cv = TRUE)$df)
+
+
+df_temp
+df_season
+df_mnth
+df_atemp
+df_hum
+df_windspeed
+df_casual
+df_registered
+
+gam2 <- gam(cnt~s(temp,df = 9)+ 
+              s(season,4 )+
+              s(mnth, 8)+
+              s(atemp,9 )+
+              s(hum,5 )+
+              s(windspeed,6 )+
+              s(casual,11 )+
+              s(registered, 13), data=raw_data)
+gam2
+summary(gam2)
+
+
+
+
+#It looks like the behaviour if year is rather linear. We can make a new model and then use an ANOVA test to decide between them.
+# !!!!!change: wage ~ year age education
+
+gam3 <- gam(cnt~s(temp, 9)+ s(season,4 ), data=raw_data)
+
+
+anova(gam1, gam3, gam2, test='F')
+
+
+#It seems like that addition of a linear year component is much better than a GAM without year. Yet, there is no evidence that a non-linear function of year is needed, see p-value of 0.34.
+summary(gam2)
+
+#Within the model with the non-linear relationship for year we can again confirm that this component does not contribute to the model.
+# !!!!!change: wage ~ year age education
+
+#Next we fit a local regression as building blocks in a GAM using the lo() function.
+gam.lo <- gam(cnt ~ s(temp, df=4) + lo(weathersit, span=0.7) + ,data=raw_data)
+plot(gam.lo, se=TRUE, col='green')
+
+
+
+
+library(magrittr)
+library(splines)
+library(MASS)
+library(ggplot2)
+library(reshape2)
+
+
+
+baseplot1 <- ggplot(data = raw_data, mapping = aes(x = cnt, y = temp)) +
+  layer(geom = "point",stat = "identity",position = "identity") +
+  theme_bw() + theme(legend.key = element_blank())
+baseplot1
+
+# baseplot1 <- ggplot(data = raw_data, mapping = aes(x = times, y = accel)) +
+#   layer(geom = "point",stat = "identity",position = "identity") +
+#   theme_bw() + theme(legend.key = element_blank())
+# baseplot1
+
+
+knots <- c(15,20,32,40)
+raw_data$X1 <- pmax(0, raw_data$times - knots[1])
+raw_data$X2 <- pmax(0, raw_data$times - knots[2])
+raw_data$X3 <- pmax(0, raw_data$times - knots[3])
+raw_data$X4 <- pmax(0, raw_data$times - knots[4])
+raw_data
+
+
+
+# We need raw_data to plot Cubic splines
+# !!!!!change: accel ~ times
+
+#Linear splines
+lsp <- lm(cnt ~ temp + X1 + X2 + X3 + X4, data = raw_data)
+summary(lsp)
+
+# lsp <- lm(accel ~ times + X1 + X2 + X3 + X4, data = raw_data)
+# summary(lsp)
+
+
+newdat <- data.frame(temp = seq(0,60,0.01))
+newdat$X1 <- pmax(0, newdat$temp - knots[1])
+newdat$X2 <- pmax(0, newdat$temp - knots[2])
+newdat$X3 <- pmax(0, newdat$temp - knots[3])
+newdat$X4 <- pmax(0, newdat$temp - knots[4])
+newdat$linear <- predict(lsp, newdata = newdat)
+
+
+
+# We need newdat and raw_data to plot quadratic lines
+# !!!!!change: accel ~ times
+
+#Quadratic splines
+qsp <- lm(cnt ~ temp + I(temp^2) + I(X1^2) + I(X2^2) + I(X3^2) + I(X4^2), data = raw_data)
+summary(qsp)
+newdat$quadratic <- predict(qsp, newdata = newdat)
+
+
+# We need raw_data to plot Cubic splines
+# !!!!!change: accel ~ times
+
+#Cubic splines
+csp <- lm(cnt ~ temp + I(temp^2) + I(temp^3) + I(X1^3) + I(X2^3) + I(X3^3) + I(X4^3), data = raw_data)
+summary(csp)
+
+
+# We need newdat to Plot splines
+newdat$cubic <- predict(csp, newdata = newdat)
+#Plot splines
+newdatMelt <- melt(data          = newdat,
+                   id.vars       = c("temp",paste0("X",1:4)),
+                   variable.name = "spline",
+                   value.name    = "value")
+
+baseplot1 +
+  layer(geom = "line", data = newdatMelt,stat = "identity", position = "identity",
+        mapping = aes(x = temp, y = value, color = spline)) +
+  facet_wrap( ~ spline, ncol = 1)
+
+
+
+

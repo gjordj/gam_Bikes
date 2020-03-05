@@ -1,0 +1,11 @@
+"0","spline_line(raw_data, which( colnames(raw_data) == ""season"" ), ""Season"")"
+"2","Warning in smooth.spline(raw_data$variable, raw_data$casual, df = 16) :"
+"2","
+ "
+"2"," not using invalid df; must have 1 < df <= n := #{unique x} = 4
+"
+"2","Warning in smooth.spline(raw_data$variable, raw_data$casual, cv = TRUE) :"
+"2","
+ "
+"2"," cross-validation with non-unique 'x' values seems doubtful
+"

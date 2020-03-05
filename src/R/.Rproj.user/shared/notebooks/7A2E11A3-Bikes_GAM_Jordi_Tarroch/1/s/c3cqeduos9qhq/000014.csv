@@ -1,0 +1,5 @@
+"0","weathersit_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""weathersit""), ""Weather Situation"")"
+"1","[1]"
+"1"," ""Weather Situation"""
+"1","
+"

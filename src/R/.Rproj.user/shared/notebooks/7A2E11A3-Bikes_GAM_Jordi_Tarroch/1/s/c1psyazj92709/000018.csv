@@ -1,0 +1,2 @@
+"0","atemp_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""atemp""), ""Feeling Temperature"")"
+"0","atemp_polynomial_degree# 4"

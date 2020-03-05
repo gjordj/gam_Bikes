@@ -1,0 +1,5 @@
+"0","workingday_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""workingday""), ""Working Day"")"
+"1","[1]"
+"1"," ""Working Day"""
+"1","
+"

@@ -1,0 +1,95 @@
+"0","#################################################################################################"
+"0","# PREDICTION 2: SPLIT OF CASUAL AND REGISTERED USERS#############################################"
+"0","#################################################################################################"
+"0",""
+"0","############################################################"
+"0","# CASUAL####################################################"
+"0","############################################################"
+"0",""
+"0","###################"
+"0","# FIT POLYNOMIALS ######################################################################################"
+"0","###################"
+"0","###########################"
+"0","# Degres of the polynomial#"
+"0","###########################"
+"0",""
+"0","raw_data <-  read_csv(path)"
+"2","Parsed with column specification:
+cols(
+  instant = [32mcol_double()[39m,
+  dteday = [34mcol_date(format = """")[39m,
+  season = [32mcol_double()[39m,
+  yr = [32mcol_double()[39m,
+  mnth = [32mcol_double()[39m,
+  holiday = [32mcol_double()[39m,
+  weekday = [32mcol_double()[39m,
+  workingday = [32mcol_double()[39m,
+  weathersit = [32mcol_double()[39m,
+  temp = [32mcol_double()[39m,
+  atemp = [32mcol_double()[39m,
+  hum = [32mcol_double()[39m,
+  windspeed = [32mcol_double()[39m,
+  casual = [32mcol_double()[39m,
+  registered = [32mcol_double()[39m,
+  cnt = [32mcol_double()[39m
+)
+"
+"0","polynomial_fit <- function(raw_data, column, name_variable){"
+"0","  raw_data <- raw_data[,c(column, 14)]"
+"0","  names(raw_data)[1] <- ""variable"""
+"0","  names(raw_data)[2] <- ""casual"""
+"0","  max_length <- min(5, length(unique(raw_data$variable))-1)"
+"0","  set.seed(17)"
+"0","  cv.errors <- data.frame(degree=seq(1,max_length,1), "
+"0","                          error= rep(NA, max_length))"
+"0","  "
+"0","  for (i in 1:max_length) {  # loop through 1-5 degree polynomials"
+"0","    glm.fit <- glm(casual~poly(variable, i), data=raw_data)"
+"0","    cv.errors$error[i] <- cv.glm(raw_data, glm.fit, K=10)$delta[1]"
+"0","  }"
+"0","  "
+"0","  kable(cv.errors)"
+"0","  if(name_variable %in% c('Season','Holiday', 'Working Day', 'Weather Situation')){"
+"0","    polynomial_degree_min_error <- cv.errors[which(cv.errors$error == min(cv.errors$error)), ]"
+"0","    print(name_variable)"
+"0","    print(polynomial_degree_min_error)"
+"0","    "
+"0","  }else{"
+"0","    polynomial_degree_min_error <- cv.errors[which(cv.errors$error == min(cv.errors$error)), ]"
+"0","    "
+"0","    glm.fit1<- glm(casual~poly(variable, 1), data=raw_data)"
+"0","    glm.fit2<- glm(casual~poly(variable, 2), data=raw_data)"
+"0","    glm.fit3<- glm(casual~poly(variable, 3), data=raw_data)"
+"0","    glm.fit4<- glm(casual~poly(variable, 4), data=raw_data)"
+"0","    glm.fit5<- glm(casual~poly(variable, 5), data=raw_data)"
+"0","    "
+"0","    "
+"0","    x_values <- range(raw_data$variable)"
+"0","    x_to_y <- seq(x_values[1], x_values[2], length.out = 1000)"
+"0","    y_values1 <- predict(glm.fit1, newdata = list( variable = x_to_y), se = TRUE)"
+"0","    y_values2 <- predict(glm.fit2, newdata = list( variable = x_to_y), se = TRUE)"
+"0","    y_values3 <- predict(glm.fit3, newdata = list( variable = x_to_y), se = TRUE)"
+"0","    y_values4 <- predict(glm.fit4, newdata = list( variable = x_to_y), se = TRUE)"
+"0","    y_values5 <- predict(glm.fit5, newdata = list( variable = x_to_y), se = TRUE)"
+"0","    "
+"0","    "
+"0","    ggplot() +"
+"0","      geom_point(data  =  raw_data, aes(x = variable, y = casual),size = 1, shape = 1) +"
+"0","      labs("
+"0","        x = name_variable,"
+"0","        y = ""Casual"""
+"0","      ) +"
+"0","      geom_line(aes(x = seq(x_values[1],x_values[2], length.out = 1000), y = y_values1$fit, colour = '1')) +"
+"0","      geom_line(aes(x = seq(x_values[1],x_values[2], length.out = 1000), y = y_values2$fit, colour = '2')) +"
+"0","      geom_line(aes(x = seq(x_values[1],x_values[2], length.out = 1000), y = y_values3$fit, colour = '3')) +"
+"0","      geom_line(aes(x = seq(x_values[1],x_values[2], length.out = 1000), y = y_values4$fit, colour = '4')) +"
+"0","      geom_line(aes(x = seq(x_values[1],x_values[2], length.out = 1000), y = y_values5$fit, colour = '5'))+"
+"0","      ggtitle(paste(""Polynomial degrees:"", polynomial_degree_min_error))"
+"0","  }"
+"0","}"
+"0",""
+"0","############################################################################"
+"0","# Plot relationships: Count vs Variable with the optimal polynomial degrees# "
+"0","############################################################################"
+"0","temp_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""temp""), ""Temperature"")"
+"0","temp_polynomial_degree# 5"

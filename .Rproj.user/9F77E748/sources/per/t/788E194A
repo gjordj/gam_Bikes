@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571576480973.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2623072251",
+    "id" : "788E194A",
+    "lastKnownWriteTime" : 1571657133,
+    "last_content_update" : 1571657133436,
+    "path" : "~/Google Drive/DATA SCIENCE-TRADING/1_CUNEF/Prediction/Prediction_Code/NBA/CP002/src/R/NBA_Regularization_JT.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "498,28",
+        "scrollLine" : "491"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

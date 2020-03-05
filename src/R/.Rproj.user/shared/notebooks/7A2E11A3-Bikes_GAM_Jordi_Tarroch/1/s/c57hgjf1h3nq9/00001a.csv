@@ -1,0 +1,5 @@
+"0",""
+"0","#Check initial correlation between variables and cnt based on a coefficient."
+"0","newData <- raw_data %>% select_at(vars(-vars))"
+"0","newData.cor = cor(newData)"
+"0","corrplot(newData.cor)"

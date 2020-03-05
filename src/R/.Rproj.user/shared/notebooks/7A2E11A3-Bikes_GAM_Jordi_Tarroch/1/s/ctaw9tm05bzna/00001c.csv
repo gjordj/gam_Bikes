@@ -1,0 +1,6 @@
+"0","windspeed_polynomial_degree<- polynomial_fit(raw_data, which( colnames(raw_data) == ""windspeed""), ""Wind Speed"")"
+"2","
+"
+"2","
+"
+"0","windspeed_polynomial_degree# 2"
